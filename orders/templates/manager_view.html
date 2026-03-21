@@ -14,8 +14,6 @@
     </style>
 </head>
 <body>
-    <h1>Hello World</h1>
-    <p>login as</p><a href="manager_view">manager</a>
     <div class="row">
         <h3>Name</p>
         <h3>Price</p>
@@ -27,8 +25,16 @@
             <p>{{item.name}}</p>
             <p>{{item.price}}</p>
             <p>{{item.type}}</p>
-            <button>open</button>
+            <div>
+                <button>edit</button>
+                <form action="delete/{{item.id}}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit">delete</button>
+                </form>
+            </div>
+            
         </div>
     {% endfor %}
+    <a href = "add">Add Food Items</a>
 </body>
 </html>
