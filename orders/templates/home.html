@@ -38,18 +38,98 @@
                 max-width: 45%;        /* 2 items per row */
             }
         }
+
+    .itemImage{
+        height: 50%;
+        width: 100%;
+        min-height: 100px;
+        max-width: 220px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .navbar {
+    display: flex;
+    gap: 15px;
+    padding: 10px;
+    overflow-x: auto;   /* 🔥 horizontal scroll */
+    white-space: nowrap;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+}
+
+.navbar::-webkit-scrollbar {
+    display: none;  /* hide scrollbar */
+}
+
+.nav-item {
+    padding: 8px 16px;
+    background-color: #cccbcb;
+    border-radius: 10px;
+    cursor: pointer;
+    flex-shrink: 0;  /* 🔥 prevents shrinking */
+}
+.nav-item:hover {
+    background-color: #ddd;
+}
+.nav-item.active {
+    background-color: green;
+    color: white;
+}
+.nav-item.active:hover{
+    background-color: rgb(0, 112, 0);
+    color: #ffffff;
+}
+
     </style>
 </head>
 <body>
+    <div class="navbar">
+        <div class="nav-item active" onclick="filterItems('All', this)">All</div>
+        <div class="nav-item" onclick="filterItems('Starter', this)">Starters</div>
+        <div class="nav-item" onclick="filterItems('Main Course', this)">Main Course</div>
+        <div class="nav-item" onclick="filterItems('Fast Food', this)">Fast Food</div>
+        <div class="nav-item" onclick="filterItems('Beverage', this)">Beverages</div>
+        <div class="nav-item" onclick="filterItems('Dessert', this)">Desserts</div>
+    </div>
     <p>login as <a href="manager_view">manager</a></p>
     <div class='itemsContainer'>
         {% for item in items %}
-            <div class="itemBox">
+            <div class="itemBox" data-type="{{item.type}}">
+                {% if item.image %}
+                    <img src="{{item.image.url}}" class="itemImage">
+                {% else %}
+                    <img src="/media/food_images/default.png" width="150">
+                {% endif %}
                 <p>{{item.name}}</p>
                 <p>{{item.price}}</p>
                 <p>{{item.type}}</p>
             </div>
         {% endfor %}
     </div>
+
+
+
+
+    
+    <script>
+        function filterItems(category, element) {
+
+            let navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(nav => nav.classList.remove('active'));
+
+            element.classList.add('active');
+
+            let items = document.querySelectorAll('.itemBox');
+
+            items.forEach(item => {
+                if (category === 'All' || item.getAttribute('data-type') === category) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+    </script>
 </body>
 </html>

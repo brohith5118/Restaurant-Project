@@ -7,7 +7,7 @@
 
 <h1>Edit Item ✏️</h1>
 
-<form action="edit/{{item.id}}" method="POST">
+<form action="edit/{{item.id}}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
 
     <label>Name:</label>
@@ -15,6 +15,9 @@
 
     <label>Price:</label>
     <input type="number" name="price" value="{{ item.price }}"><br><br>
+
+    <label>Image:</label>
+    <input type="file" name="image">
 
     <button type="submit">Update</button>
 </form>

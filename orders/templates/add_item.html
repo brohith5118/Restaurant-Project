@@ -7,14 +7,15 @@
 </head>
 <body>
     
-    <form action="add" method="POST">
+    <form action="add" method="POST" enctype="multipart/form-data">
 
         {% csrf_token %}
         Enter name: <input type="text" name="name"><br>
         Enter price: <input type="text" name="price"><br>
         Enter type: <input type="text" name="type"><br>
         Enter description: <input type="text" name="description"><br>
-        <input type="submit"><br>
+        Add Image: <input type="file" name="image"><br>
+        <input type="submit">
     </form>
 
 </body>
