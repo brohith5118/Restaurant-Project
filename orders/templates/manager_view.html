@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Manager Panel</title>
+
     <style>
-        .headerRow{
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 2fr;
-            align-items: center;
-            justify-items: center;
-            border: 1px solid #bff1ef;
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 8px;
-            margin-top: 50px;
+        body {
+            font-family: Arial;
+            padding: 20px;
         }
-        .itemRow{
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .headerRow, .itemRow {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 2fr;
+            grid-template-columns: 2fr 1fr 1.5fr 2fr;
             align-items: center;
             justify-items: center;
             border: 1px solid #bff1ef;
@@ -26,37 +25,102 @@
             padding: 10px;
             margin-bottom: 8px;
         }
-        .actionMenu{
+
+        .headerRow {
+            font-weight: bold;
+            background-color: #f5f5f5;
+        }
+
+        .itemRow {
+            background-color: #fafafa;
+        }
+
+        .actionMenu {
             display: flex;
-            justify-content: space-around;
+            gap: 10px;
+        }
+
+        button {
+            padding: 6px 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .editBtn {
+            background-color: orange;
+            color: white;
+        }
+
+        .deleteBtn {
+            background-color: red;
+            color: white;
+        }
+
+        .editBtn:hover {
+            background-color: darkorange;
+        }
+
+        .deleteBtn:hover {
+            background-color: darkred;
+        }
+
+        .addBtn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 15px;
+            background-color: green;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .addBtn:hover {
+            background-color: darkgreen;
         }
     </style>
 </head>
+
 <body>
+
+    <h1>Manager Panel 📋</h1>
+
+    <!-- Header -->
     <div class="headerRow">
-        <h3>Name</p>
-        <h3>Price</p>
-        <h3>Type</p>
-        <h3>Actions</p>
+        <div>Name</div>
+        <div>Price</div>
+        <div>Category</div>
+        <div>Actions</div>
     </div>
+
+    <!-- Items -->
     {% for item in items %}
         <div class="itemRow">
-            <p>{{item.name}}</p>
-            <p>{{item.price}}</p>
-            <p>{{item.type}}</p>
+            <div>{{ item.name }}</div>
+            <div>₹{{ item.price }}</div>
+            <div>{{ item.category.name }}</div>
+
             <div class="actionMenu">
-                <form action="open_edit/{{item.id}}" method="POST">
+                
+                <!-- ✅ Edit (GET request, not POST) -->
+                <a href="/open_edit/{{ item.id }}">
+                    <button class="editBtn">Edit</button>
+                </a>
+
+                <!-- ✅ Delete -->
+                <form action="/delete/{{ item.id }}" method="POST">
                     {% csrf_token %}
-                    <button type="submit">edit</button>
+                    <button type="submit" class="deleteBtn">Delete</button>
                 </form>
-                <form action="delete/{{item.id}}" method="POST">
-                    {% csrf_token %}
-                    <button type="submit">delete</button>
-                </form>
+
             </div>
-            
         </div>
+    {% empty %}
+        <p>No items available</p>
     {% endfor %}
-    <a href = "add">Add Food Items</a>
+
+    <!-- Add Button -->
+    <a href="/add" class="addBtn">➕ Add Food Item</a>
+
 </body>
 </html>

@@ -3,20 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Add Item</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+        }
+
+        form {
+            max-width: 400px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+        }
+
+        button {
+            padding: 10px;
+            background-color: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: darkgreen;
+        }
+    </style>
 </head>
 <body>
-    
-    <form action="add" method="POST" enctype="multipart/form-data">
 
-        {% csrf_token %}
-        Enter name: <input type="text" name="name"><br>
-        Enter price: <input type="text" name="price"><br>
-        Enter type: <input type="text" name="type"><br>
-        Enter description: <input type="text" name="description"><br>
-        Add Image: <input type="file" name="image"><br>
-        <input type="submit">
-    </form>
+<h1>Add Item ➕</h1>
+
+<form action="/add" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <label>Name:</label>
+    <input type="text" name="name" required>
+
+    <label>Price:</label>
+    <input type="number" name="price" required>
+
+    <label>Category:</label>
+    <select name="category" required>
+        {% for cat in categories %}
+            <option value="{{ cat.id }}">{{ cat.name }}</option>
+        {% endfor %}
+    </select>
+
+    <label>Description:</label>
+    <input type="text" name="description">
+
+    <label>Image:</label>
+    <input type="file" name="image">
+
+    <button type="submit">Add Item</button>
+</form>
 
 </body>
 </html>

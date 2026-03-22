@@ -3,133 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Menu</title>
+
     <style>
-        .itemsContainer{
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* ✅ Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            padding: 8px 16px;
+            background-color: #cccbcb;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            background-color: green;
+            color: white;
+        }
+
+        .nav-item:hover {
+            background-color: #ddd;
+        }
+
+        /* ✅ Category Title */
+        .category-title {
+            margin: 20px;
+            font-size: 24px;
+        }
+
+        /* ✅ Items Grid */
+        .itemsContainer {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
-            padding: 20px;
-        }
-        .itemBox{
-            background-color: aliceblue;
-            border-radius: 10px;
-            width: 100%;
-            min-height: 200px;
-            max-width: 220px;     
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        @media (max-width: 600px) {
-        .itemsContainer {
-            gap: 15px;
-            padding: 10px;
+            padding: 0 20px 20px;
         }
 
         .itemBox {
-            max-width: 100%;       /* full width on small screens */
+            background-color: aliceblue;
+            border-radius: 10px;
+            max-width: 220px;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 10px;
         }
-    }
 
-        @media (max-width: 900px) {
+        .itemImage {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        @media (max-width: 600px) {
             .itemBox {
-                max-width: 45%;        /* 2 items per row */
+                max-width: 100%;
             }
         }
-
-    .itemImage{
-        height: 50%;
-        width: 100%;
-        min-height: 100px;
-        max-width: 220px;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-    }
-
-    .navbar {
-    display: flex;
-    gap: 15px;
-    padding: 10px;
-    overflow-x: auto;   /* 🔥 horizontal scroll */
-    white-space: nowrap;
-    background-color: #fff;
-    border-bottom: 1px solid #ddd;
-}
-
-.navbar::-webkit-scrollbar {
-    display: none;  /* hide scrollbar */
-}
-
-.nav-item {
-    padding: 8px 16px;
-    background-color: #cccbcb;
-    border-radius: 10px;
-    cursor: pointer;
-    flex-shrink: 0;  /* 🔥 prevents shrinking */
-}
-.nav-item:hover {
-    background-color: #ddd;
-}
-.nav-item.active {
-    background-color: green;
-    color: white;
-}
-.nav-item.active:hover{
-    background-color: rgb(0, 112, 0);
-    color: #ffffff;
-}
-
     </style>
 </head>
+
 <body>
+
+    <!-- ✅ Dynamic Navbar -->
     <div class="navbar">
-        <div class="nav-item active" onclick="filterItems('All', this)">All</div>
-        <div class="nav-item" onclick="filterItems('Starter', this)">Starters</div>
-        <div class="nav-item" onclick="filterItems('Main Course', this)">Main Course</div>
-        <div class="nav-item" onclick="filterItems('Fast Food', this)">Fast Food</div>
-        <div class="nav-item" onclick="filterItems('Beverage', this)">Beverages</div>
-        <div class="nav-item" onclick="filterItems('Dessert', this)">Desserts</div>
-    </div>
-    <p>login as <a href="manager_view">manager</a></p>
-    <div class='itemsContainer'>
-        {% for item in items %}
-            <div class="itemBox" data-type="{{item.type}}">
-                {% if item.image %}
-                    <img src="{{item.image.url}}" class="itemImage">
-                {% else %}
-                    <img src="/media/food_images/default.png" width="150">
-                {% endif %}
-                <p>{{item.name}}</p>
-                <p>{{item.price}}</p>
-                <p>{{item.type}}</p>
+        {% for category in categories %}
+            <div class="nav-item"
+                 onclick="scrollToCategory('{{ category.name|slugify }}', this)">
+                {{ category.name }}
             </div>
         {% endfor %}
     </div>
 
+    <p style="margin: 10px;">
+        login as <a href="manager_view">manager</a>
+    </p>
 
+    <!-- ✅ Dynamic Category Sections -->
+    {% for category in categories %}
+        <h2 id="{{ category.name|slugify }}" class="category-title">
+            {{ category.name }}
+        </h2>
 
+        <div class="itemsContainer">
+            {% for item in category.fooditem_set.all %}
+                <div class="itemBox">
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" class="itemImage">
+                    {% else %}
+                        <img src="/media/food_images/default.png" class="itemImage">
+                    {% endif %}
+                    <p>{{ item.name }}</p>
+                    <p>₹{{ item.price }}</p>
+                </div>
+            {% empty %}
+                <p>No items available</p>
+            {% endfor %}
+        </div>
+    {% endfor %}
 
-    
+    <!-- ✅ Scroll Spy Script -->
     <script>
-        function filterItems(category, element) {
+        const sections = document.querySelectorAll('.category-title');
+        const navItems = document.querySelectorAll('.nav-item');
 
-            let navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach(nav => nav.classList.remove('active'));
+        window.addEventListener('scroll', () => {
+            let current = "";
 
-            element.classList.add('active');
-
-            let items = document.querySelectorAll('.itemBox');
-
-            items.forEach(item => {
-                if (category === 'All' || item.getAttribute('data-type') === category) {
-                    item.style.display = 'flex';
-                } else {
-                    item.style.display = 'none';
+            sections.forEach(section => {
+                if (pageYOffset >= section.offsetTop - 120) {
+                    current = section.id;
                 }
             });
+
+            navItems.forEach(nav => {
+                nav.classList.remove('active');
+                if (nav.innerText.toLowerCase().replace(/\s+/g, '-') === current) {
+                    nav.classList.add('active');
+                }
+            });
+        });
+
+        function scrollToCategory(category, element) {
+            document.getElementById(category)
+                    .scrollIntoView({ behavior: 'smooth' });
         }
     </script>
+
 </body>
 </html>

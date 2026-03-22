@@ -2,19 +2,61 @@
 <html>
 <head>
     <title>Edit Item</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+        }
+
+        form {
+            max-width: 400px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+        }
+
+        button {
+            padding: 10px;
+            background-color: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: darkgreen;
+        }
+    </style>
 </head>
 <body>
 
 <h1>Edit Item ✏️</h1>
 
-<form action="edit/{{item.id}}" method="POST" enctype="multipart/form-data">
+<form action="/edit/{{item.id}}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
 
     <label>Name:</label>
-    <input type="text" name="name" value="{{ item.name }}"><br><br>
+    <input type="text" name="name" value="{{ item.name }}">
 
     <label>Price:</label>
-    <input type="number" name="price" value="{{ item.price }}"><br><br>
+    <input type="number" name="price" value="{{ item.price }}">
+
+    <label>Category:</label>
+    <select name="category">
+        {% for cat in categories %}
+            <option value="{{ cat.id }}"
+                {% if item.category.id == cat.id %}selected{% endif %}>
+                {{ cat.name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label>Description:</label>
+    <input type="text" name="description" value="{{ item.description }}">
 
     <label>Image:</label>
     <input type="file" name="image">
