@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ item.name }}</title>
+
+<style>
+
+body {
+    font-family: Arial;
+    padding: 20px;
+}
+
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+.itemImage {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.price {
+    font-size: 20px;
+    color: green;
+}
+
+.category {
+    color: gray;
+}
+
+.desc {
+    margin-top: 10px;
+}
+
+/* 🔥 BACK BUTTON */
+.back {
+    text-decoration: none;
+    background-color: green;
+    border-radius: 10px;
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    color: rgb(255, 255, 255);
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+
+@media (min-width: 768px) {
+    .container {
+        flex-direction: row;
+        align-items: flex-start;
+        max-width: 1000px;
+        margin: auto;
+    }
+
+    .itemImage {
+        width: 50%;
+        height: 350px;
+    }
+
+    .content {
+        width: 55%;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<a href="/" class="back">⬅ Back</a>
+
+<div class="container">
+
+    {% if item.image %}
+        <img src="{{ item.image.url }}" class="itemImage">
+    {% else %}
+        <img src="/media/food_images/default.png" class="itemImage">
+    {% endif %}
+
+    <div class="content">
+        <h1>{{ item.name }}</h1>
+        <div class="price">₹{{ item.price }}</div>
+        <div class="category">{{ item.category.name }}</div>
+        <div class="desc">{{ item.description }}</div>
+        <form action="add_to_cart/{{item.id}}">
+            <button type="submit">Add to cart</button>
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>

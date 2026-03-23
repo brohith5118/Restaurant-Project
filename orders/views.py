@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from .models import foodItem,Category
+from .models import foodItem,Category,Order,OrderItem
 from django.db.models import Case, When, Value, IntegerField
 
 # Create your views here.
@@ -65,3 +65,26 @@ def edit_item(request, id):
         'item': item,
         'categories': categories
     })
+
+def view_item(request,id):
+    item = foodItem.objects.select_related('category').get(id=id)
+    return render(request,'item.html',{'item':item})
+
+def add_to_cart(request,id):
+    if request.method == "POST":
+        quantity = int(request.POST.get('quantity',1))
+
+        order, create = Order.objects.get_or_create(is_completed=False)
+
+        item = foodItem.objects.get(id=id)
+
+        order_item, created = OrderItem.objects.get_or_create(
+            order = order,
+            food_item = item,
+            defaults={'quantity':quantity}
+        )
+
+        if not created:
+            order_item.quantity += quantity
+            order_item.save()
+    return redirect('view_item',id=id)

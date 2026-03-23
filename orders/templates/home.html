@@ -62,6 +62,8 @@
             flex-direction: column;
             align-items: center;
             padding-bottom: 10px;
+            color: black;
+            text-decoration: none;
         }
 
         .itemImage {
@@ -104,6 +106,7 @@
 
         <div class="itemsContainer">
             {% for item in category.fooditem_set.all %}
+            <a style = "text-decoration: none;" href = "view_item/{{item.id}}">
                 <div class="itemBox">
                     {% if item.image %}
                         <img src="{{ item.image.url }}" class="itemImage">
@@ -113,6 +116,7 @@
                     <p>{{ item.name }}</p>
                     <p>₹{{ item.price }}</p>
                 </div>
+            </a>
             {% empty %}
                 <p>No items available</p>
             {% endfor %}

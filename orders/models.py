@@ -19,3 +19,18 @@ class foodItem(models.Model):
     def __str__(self):
         return self.name
     
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_completed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Order {self.id}"
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+    food_item = models.ForeignKey(foodItem, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.food_item.name} x {self.quantity}"
