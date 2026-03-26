@@ -18,13 +18,6 @@ class foodItem(models.Model):
 
     def __str__(self):
         return self.name
-    
-class Order(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    is_completed = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"Order {self.id}"
 
 
 class OrderItem(models.Model):
@@ -34,3 +27,24 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.food_item.name} x {self.quantity}"
+    
+class User(models.Model):
+    ROLE_CHOICES = [
+        ('customer', 'Customer'),
+        ('manager', 'Manager'),
+    ]
+
+    username = models.CharField(max_length=100, unique=True)
+    password = models.CharField(max_length=255)  # hashed password
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
+
+    def __str__(self):
+        return self.username
+    
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_completed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Order {self.id} - {self.user.username}"
